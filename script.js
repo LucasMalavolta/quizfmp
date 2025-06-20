@@ -1,10 +1,8 @@
-// Estado do quiz
 let currentQuestion = 0;
 let score = 0;
 let answers = [];
 let selectedAnswer = null;
 
-// Elementos DOM
 const startScreen = document.getElementById('start-screen');
 const quizScreen = document.getElementById('quiz-screen');
 const resultsScreen = document.getElementById('results-screen');
@@ -12,7 +10,6 @@ const startBtn = document.getElementById('start-btn');
 const nextBtn = document.getElementById('next-btn');
 const restartBtn = document.getElementById('restart-btn');
 
-// Elementos do quiz
 const questionCounter = document.getElementById('question-counter');
 const scoreCounter = document.getElementById('score-counter');
 const progressBar = document.getElementById('progress-bar');
@@ -23,18 +20,15 @@ const feedbackIcon = document.getElementById('feedback-icon');
 const feedbackText = document.getElementById('feedback-text');
 const correctAnswerDiv = document.getElementById('correct-answer');
 
-// Elementos dos resultados
 const finalScore = document.getElementById('final-score');
 const percentage = document.getElementById('percentage');
 const scoreMessage = document.getElementById('score-message');
 const answersSummary = document.getElementById('answers-summary');
 
-// Event listeners
 startBtn.addEventListener('click', startQuiz);
 nextBtn.addEventListener('click', nextQuestion);
 restartBtn.addEventListener('click', restartQuiz);
 
-// Inicializar o quiz
 function startQuiz() {
     currentQuestion = 0;
     score = 0;
@@ -45,7 +39,6 @@ function startQuiz() {
     loadQuestion();
 }
 
-// Mostrar tela específica
 function showScreen(screen) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     
@@ -62,25 +55,19 @@ function showScreen(screen) {
     }
 }
 
-// Carregar pergunta atual
 function loadQuestion() {
     const question = questions[currentQuestion];
     
-    // Atualizar informações do cabeçalho
     questionCounter.textContent = `Pergunta ${currentQuestion + 1} de ${questions.length}`;
     scoreCounter.textContent = `Pontuação: ${score}/${currentQuestion}`;
     
-    // Atualizar barra de progresso
     const progress = (currentQuestion / questions.length) * 100;
     progressBar.style.width = `${progress}%`;
-    
-    // Mostrar pergunta
+
     questionText.textContent = question.question;
     
-    // Limpar opções anteriores
     optionsContainer.innerHTML = '';
     
-    // Criar opções
     question.options.forEach((option, index) => {
         const optionElement = document.createElement('button');
         optionElement.className = 'option';
@@ -89,34 +76,28 @@ function loadQuestion() {
         optionsContainer.appendChild(optionElement);
     });
     
-    // Esconder feedback
     feedbackContainer.classList.add('hidden');
     selectedAnswer = null;
 }
 
-// Selecionar resposta
 function selectAnswer(answer, element) {
-    if (selectedAnswer !== null) return; // Previne múltiplas seleções
+    if (selectedAnswer !== null) return; 
     
     selectedAnswer = answer;
     const question = questions[currentQuestion];
     const isCorrect = answer === question.answer;
-    
-    // Marcar resposta selecionada
+
     element.classList.add('selected');
     
-    // Desabilitar todas as opções
     document.querySelectorAll('.option').forEach(opt => {
         opt.classList.add('disabled');
         opt.style.pointerEvents = 'none';
     });
     
-    // Mostrar resultado após um pequeno delay
-    setTimeout(() => {
+   setTimeout(() => {
         showAnswerFeedback(isCorrect, question.answer);
         
-        // Marcar opções corretas e incorretas
-        document.querySelectorAll('.option').forEach(opt => {
+       document.querySelectorAll('.option').forEach(opt => {
             if (opt.textContent === question.answer) {
                 opt.classList.add('correct');
             } else if (opt.textContent === answer && !isCorrect) {
@@ -124,12 +105,10 @@ function selectAnswer(answer, element) {
             }
         });
         
-        // Atualizar pontuação
         if (isCorrect) {
             score++;
         }
         
-        // Salvar resposta
         answers.push({
             question: question.question,
             userAnswer: answer,
@@ -137,13 +116,11 @@ function selectAnswer(answer, element) {
             isCorrect: isCorrect
         });
         
-        // Atualizar contador de pontuação
         scoreCounter.textContent = `Pontuação: ${score}/${currentQuestion + 1}`;
         
     }, 300);
 }
 
-// Mostrar feedback da resposta
 function showAnswerFeedback(isCorrect, correctAnswer) {
     const feedbackStatus = feedbackText.parentElement;
     
@@ -166,7 +143,6 @@ function showAnswerFeedback(isCorrect, correctAnswer) {
         correctAnswerDiv.classList.remove('hidden');
     }
     
-    // Atualizar texto do botão
     if (currentQuestion < questions.length - 1) {
         nextBtn.textContent = 'Próxima Pergunta';
     } else {
@@ -176,7 +152,6 @@ function showAnswerFeedback(isCorrect, correctAnswer) {
     feedbackContainer.classList.remove('hidden');
 }
 
-// Próxima pergunta
 function nextQuestion() {
     if (currentQuestion < questions.length - 1) {
         currentQuestion++;
@@ -186,18 +161,15 @@ function nextQuestion() {
     }
 }
 
-// Mostrar resultados
 function showResults() {
     showScreen('results');
     
     const totalQuestions = questions.length;
     const percentageScore = Math.round((score / totalQuestions) * 100);
     
-    // Mostrar pontuação
     finalScore.textContent = `${score}/${totalQuestions}`;
     percentage.textContent = `${percentageScore}% de acertos`;
     
-    // Determinar classe e mensagem baseada na pontuação
     let scoreClass, message;
     if (percentageScore >= 90) {
         scoreClass = 'excellent';
@@ -217,14 +189,11 @@ function showResults() {
     scoreMessage.className = `score-message ${scoreClass}`;
     scoreMessage.textContent = message;
     
-    // Atualizar barra de progresso para 100%
     progressBar.style.width = '100%';
     
-    // Mostrar resumo das respostas
     showAnswersSummary();
 }
 
-// Mostrar resumo das respostas
 function showAnswersSummary() {
     answersSummary.innerHTML = '';
     
@@ -252,7 +221,6 @@ function showAnswersSummary() {
     });
 }
 
-// Reiniciar quiz
 function restartQuiz() {
     currentQuestion = 0;
     score = 0;
@@ -262,20 +230,16 @@ function restartQuiz() {
     showScreen('start');
 }
 
-// Adicionar animações suaves nas transições
 function addTransitionEffects() {
-    // Adicionar efeito de fade nas mudanças de tela
     const screens = document.querySelectorAll('.screen');
     screens.forEach(screen => {
         screen.style.transition = 'opacity 0.3s ease';
     });
 }
 
-// Inicializar efeitos quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
     addTransitionEffects();
     
-    // Adicionar efeitos de hover nos botões
     document.querySelectorAll('.btn-primary').forEach(btn => {
         btn.addEventListener('mouseenter', () => {
             btn.style.transform = 'translateY(-2px)';
@@ -287,9 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Adicionar suporte a teclado
 document.addEventListener('keydown', (e) => {
-    // Enter para avançar
     if (e.key === 'Enter') {
         if (startScreen.classList.contains('active')) {
             startQuiz();
@@ -300,7 +262,6 @@ document.addEventListener('keydown', (e) => {
         }
     }
     
-    // Números 1-4 para selecionar opções
     if (quizScreen.classList.contains('active') && selectedAnswer === null) {
         const num = parseInt(e.key);
         if (num >= 1 && num <= 4) {
@@ -312,7 +273,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Adicionar indicador visual de carregamento
 function showLoading(element) {
     element.classList.add('loading');
 }
@@ -321,7 +281,6 @@ function hideLoading(element) {
     element.classList.remove('loading');
 }
 
-// Função para salvar progresso no localStorage (opcional)
 function saveProgress() {
     const progress = {
         currentQuestion,
